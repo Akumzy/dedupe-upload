@@ -1,0 +1,15 @@
+{
+  "name": "dedupe-upload",
+  "version": "0.0.1",
+  "main": "./lib/cjs/index.js",
+  "module": "./lib/esm/index.js",
+  "files": [
+    "lib/"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc -p ./tsconfig.json && tsc -p ./tsconfig-cjs.json",
+    "watch": "tsc -p ./tsconfig.json -w"
+  },
+  "dependencies": {}
+}
