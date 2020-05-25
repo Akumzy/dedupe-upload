@@ -1,8 +1,9 @@
 {
-  "name": "dedupe-upload",
+  "name": "@akumzy/dedupe-upload",
   "version": "0.0.1",
   "main": "./lib/cjs/index.js",
   "module": "./lib/esm/index.js",
+  "description": "A WebSocket client file upload with de-duplication",
   "author": {
     "email": "akumaisaacakuma@gmail.com",
     "name": "Akuma Isaac Akuma"
@@ -15,5 +16,10 @@
     "build": "tsc -p ./tsconfig.json && tsc -p ./tsconfig-cjs.json",
     "watch": "tsc -p ./tsconfig.json -w"
   },
-  "dependencies": {}
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Akumzy/dedupe-upload.git"
+  },
+  "dependencies": {},
+  "homepage": "https://github.com/Akumzy/dedupe-upload"
 }

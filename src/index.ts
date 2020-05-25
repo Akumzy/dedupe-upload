@@ -2,7 +2,6 @@ import workerScript from './worker.js'
 interface IFile {
   hash: string
   blocks: IBlock[]
-
 }
 interface IBlock {
   order: number
@@ -21,7 +20,9 @@ interface IPayload {
 }
 
 interface ICompleteResponse {
-  version?: number; cloud_id?: string; error?: string
+  version?: number
+  cloud_id?: string
+  error?: string
 }
 
 const AckKey = '__ack__-'
@@ -41,30 +42,37 @@ export default class Client {
   #worker = ''
   constructor(private url: string) {
     let code = workerScript.toString()
-    code = code.substring(code.indexOf("{") + 1, code.lastIndexOf("}"))
+    code = code.substring(code.indexOf('{') + 1, code.lastIndexOf('}'))
     this.#worker = URL.createObjectURL(new Blob([code], { type: 'text/javascript' }))
   }
   #connect = () => {
     if (this.ws) {
       if (this.ws.CLOSED || this.ws.CLOSING) {
         this.ws = new WebSocket(this.url)
-        // Call this to handler in coming events 
+        // Call this to handler in coming events
         this.#handlers()
       }
       return this.ws
     } else {
       this.ws = new WebSocket(this.url)
-      // Call this to handler in coming events 
+      // Call this to handler in coming events
       this.#handlers()
     }
     return this.ws
   }
+  #reconnect = async () => {
+    try {
+      await this.#io()
+    } catch (error) {
+      this.#reconnect()
+    }
+  }
   #handlers = () => {
     let ths = this
-    this.ws.onclose = function (ev) {
-      console.log(ev.reason)
+    this.ws.onclose = function () {
       if (ths.#uploads.size) {
-        ths.#uploads.forEach(id => ths.dispatchEvent('pause', id))
+        ths.#uploads.forEach((id) => ths.dispatchEvent('pause', id))
+        ths.#reconnect()
       }
     }
     ths.ws.onerror = function (ev) {
@@ -72,7 +80,7 @@ export default class Client {
     }
     ths.ws.onopen = function () {
       if (ths.#uploads.size) {
-        ths.#uploads.forEach(id => ths.dispatchEvent('resume', id))
+        ths.#uploads.forEach((id) => ths.dispatchEvent('resume', id))
       }
     }
     this.ws.onmessage = function (ev) {
@@ -83,7 +91,6 @@ export default class Client {
           if (typeof handler === 'function') handler(payload.data)
         }
       }
-
     }
   }
 
@@ -99,11 +106,10 @@ export default class Client {
           resolve(this.ws)
         })
       } else if ([this.ws.CLOSING, this.ws.CLOSED].includes(this.ws.readyState)) {
-        this.#connect()
-          .addEventListener('open', () => {
-            clearTimeout(timer)
-            resolve(this.ws)
-          })
+        this.#connect().addEventListener('open', () => {
+          clearTimeout(timer)
+          resolve(this.ws)
+        })
       } else if (this.ws.readyState === this.ws.CONNECTING) {
         this.ws.addEventListener('open', () => {
           clearTimeout(timer)
@@ -113,7 +119,6 @@ export default class Client {
         resolve(this.ws)
       }
     })
-
   }
 
   #readBlock = (p: { file: File; start: number; end: number }) => {
@@ -128,7 +133,6 @@ export default class Client {
       reader.onerror = reject
       reader.readAsDataURL(blob)
     })
-
   }
   send = async (event: string, data: any, ack?: Function) => {
     const io = await this.#io()
@@ -142,7 +146,7 @@ export default class Client {
   dispatchEvent = (event: Events, payload: any) => {
     let handlers = this.#listener.get(event)
     if (Array.isArray(handlers)) {
-      handlers.forEach(h => h(payload))
+      handlers.forEach((h) => h(payload))
     }
     return this
   }
@@ -155,7 +159,7 @@ export default class Client {
   removeEventListener = (event: Events, cb: Function) => {
     let handlers = this.#listener.get(event)
     if (Array.isArray(handlers)) {
-      handlers = handlers.filter(h => h !== cb)
+      handlers = handlers.filter((h) => h !== cb)
       this.#listener.set(event, handlers)
     }
     return this
@@ -165,20 +169,18 @@ export default class Client {
    */
   #dedupe = (file: File) => {
     return new Promise<IFile>((resolve, reject) => {
-
       let worker = new Worker(this.#worker)
-      worker.onmessage = function onmessage ({ data }) {
+      worker.onmessage = function onmessage({ data }) {
         resolve(data)
         worker.terminate()
       }
-      worker.onerror = function onmessage (error) {
+      worker.onerror = function onmessage(error) {
         reject(error)
       }
       worker.postMessage(file)
     })
   }
-  upload = async (file: File, options: { folder_id?: string; folder_path?: string, id: string } = { id: 'upload' }) => {
-
+  upload = async (file: File, options: { folder_id?: string; folder_path?: string; id: string } = { id: 'upload' }) => {
     if (typeof options.folder_id !== 'string' && typeof options.folder_path !== 'string') {
       throw new Error('folder_id or folder_path was not provided')
     }
@@ -193,7 +195,7 @@ export default class Client {
       folder_id: options.folder_id,
       folder_path: options.folder_path,
       mod_time: new Date(file.lastModified),
-      is_web: true
+      is_web: true,
     }
 
     return new Promise<ICompleteResponse>((resolve, reject) => {
@@ -237,7 +239,6 @@ export default class Client {
           ths.#uploads.delete(options.id)
         }
         try {
-
           if (p.exists) {
             ths.dispatchEvent('progress', { size: file.size, current: file.size })
             return resolve(p.record)
@@ -274,21 +275,17 @@ export default class Client {
                 reject(h.error)
               } else resolve(h)
             })
-
           }
         } finally {
           removeEvents()
         }
       })
     })
-
   }
-
-
 }
 
-function waitUntil (cb: () => boolean) {
-  return new Promise((resolve, ) => {
+function waitUntil(cb: () => boolean) {
+  return new Promise((resolve) => {
     let timer = setInterval(() => {
       if (!cb()) {
         resolve()
