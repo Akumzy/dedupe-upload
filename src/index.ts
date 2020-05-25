@@ -30,6 +30,11 @@ const EVENT_CHECK_RECORD = 'check-write-record'
 const EVENT_UPLOAD = 'upload'
 const EVENT_UPLOAD_COMPLETE = 'upload-completed'
 type Events = 'paused' | 'resumed' | 'canceled' | 'pause' | 'resume' | 'cancel' | 'progress' | 'socket-error'
+interface ProgressPayload {
+  size: number
+  current: number
+  id: string
+}
 
 export default class Client {
   ws!: WebSocket
@@ -240,7 +245,7 @@ export default class Client {
         }
         try {
           if (p.exists) {
-            ths.dispatchEvent('progress', { size: file.size, current: file.size })
+            ths.dispatchEvent('progress', { size: file.size, current: file.size, id: options.id })
             return resolve(p.record)
           } else if (p.access_denied) {
             return reject(p.message)
@@ -264,7 +269,7 @@ export default class Client {
                   resolve(h === hash)
                 })
               })
-              ths.dispatchEvent('progress', { size: file.size, current: end })
+              ths.dispatchEvent('progress', { size: file.size, current: end, id: options.id })
               if (!res) {
                 return reject('Block hash mismatch')
               }
