@@ -30,8 +30,7 @@ export default function workerScripts () {
 
   }
   self.addEventListener('message', async function onmessage (ev) {
-    /**@type {File} */
-    let file = ev.data
+    const file: File = ev.data
     const blocks = generateBlocks(file.size)
     const reader = new FileReader()
 

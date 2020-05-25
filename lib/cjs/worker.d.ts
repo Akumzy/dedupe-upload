@@ -1,1 +1,1 @@
-export default function workerScript(): void;
+export default function workerScripts(): void;
