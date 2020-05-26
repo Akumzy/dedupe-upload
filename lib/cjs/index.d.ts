@@ -2,6 +2,7 @@ interface ICompleteResponse {
     version?: number;
     cloud_id?: string;
     error?: string;
+    [key: string]: any;
 }
 declare type Events = 'paused' | 'resumed' | 'canceled' | 'pause' | 'resume' | 'cancel' | 'progress' | 'socket-error';
 export default class Client {

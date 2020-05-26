@@ -23,6 +23,7 @@ interface ICompleteResponse {
   version?: number
   cloud_id?: string
   error?: string
+  [key: string]: any
 }
 
 const AckKey = '__ack__-'
