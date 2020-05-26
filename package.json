@@ -1,6 +1,6 @@
 {
   "name": "@akumzy/dedupe-upload",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "main": "./lib/cjs/index.js",
   "module": "./lib/esm/index.js",
   "description": "A WebSocket client file upload with de-duplication",

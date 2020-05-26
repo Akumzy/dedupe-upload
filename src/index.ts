@@ -187,9 +187,7 @@ export default class Client {
     })
   }
   upload = async (file: File, options: { folder_id?: string; folder_path?: string; id: string } = { id: 'upload' }) => {
-    if (typeof options.folder_id !== 'string' && typeof options.folder_path !== 'string') {
-      throw new Error('folder_id or folder_path was not provided')
-    }
+  
     let fileObject = await this.#dedupe(file)
 
     const ths = this
