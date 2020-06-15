@@ -15,7 +15,7 @@ import Client from '../lib/esm/index.js'
 //         console.log(error)
 //     }
 // }
-const client = new Client(`ws://127.0.0.1:4444/ws`)
+const client = new Client(`ws://127.0.0.1:8888`)
 window.onload = main
 function main () {
 

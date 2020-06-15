@@ -1,6 +1,6 @@
 {
   "name": "@akumzy/dedupe-upload",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "main": "./lib/cjs/index.js",
   "module": "./lib/esm/index.js",
   "description": "A WebSocket client file upload with de-duplication",
@@ -21,5 +21,6 @@
     "url": "git+https://github.com/Akumzy/dedupe-upload.git"
   },
   "dependencies": {},
-  "homepage": "https://github.com/Akumzy/dedupe-upload"
+  "homepage": "https://github.com/Akumzy/dedupe-upload",
+  "devDependencies": {}
 }
