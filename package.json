@@ -8,6 +8,7 @@
     "email": "akumaisaacakuma@gmail.com",
     "name": "Akuma Isaac Akuma"
   },
+  "publishConfig": { "registry": "https://npm.pkg.github.com/" },
   "files": [
     "lib/"
   ],
