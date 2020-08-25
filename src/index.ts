@@ -55,7 +55,7 @@ export default class Client {
   #uploads = new Set<string>();
 
   #worker = "";
-
+  #errors: any = null;
   constructor(private url: string) {
     let code = workerScript.toString();
     code = code.substring(code.indexOf("{") + 1, code.lastIndexOf("}"));
@@ -148,7 +148,11 @@ export default class Client {
   #readBlock = (p: { file: File; start: number; end: number }) => {
     return p.file.slice(p.start, p.end).arrayBuffer();
   };
-
+  getError() {
+    const errors = this.#errors;
+    this.#errors = null;
+    return errors;
+  }
   send = async (event: string, data: any, ack?: Function) => {
     const io = await this.#io();
 
@@ -293,6 +297,7 @@ export default class Client {
             });
             return resolve(p.record);
           } else if (p.access_denied) {
+            ths.#errors = p;
             return reject(p.message);
           } else {
             ths.#uploads.add(options.id);

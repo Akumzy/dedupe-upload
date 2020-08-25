@@ -10,6 +10,7 @@ export default class Client {
     private url;
     ws: WebSocket;
     constructor(url: string);
+    getError(): any;
     send: (event: string, data: any, ack?: Function | undefined) => Promise<void>;
     sendBinary: (data: {
         event: string;
